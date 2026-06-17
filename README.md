@@ -77,6 +77,7 @@ All binary data is HEX encoded.
     "RandomSeed": "", // HEX encoded random seed
     "PublicKey": "", // HEX encoded publicKey (target to mine to)
     "Difficulty": 316, // the actual active difficulty for the pool
+    "DifficultyAddition": 74300, // the actual active difficulty for the pool
     "Method": "StratumJob", // defines that this is a job
     "MessageType": 501 // id of the message type = StratumJob
 }
@@ -90,10 +91,14 @@ example job to work on:
     "RandomSeed": "A030176C55672400F4C6472076C1C15AB2BC0EFC16B6B6481578C3F3FF54D561",
     "PublicKey": "B43D85DF69E4E9C92938A214C5C20634D90768C0E98A94575FEB9AE53D3C60F8",
     "Difficulty": 316,
+    "DifficultyAddition": 74300,
     "Method": "StratumJob",
     "MessageType": 501
 }
 ```
+
+Qubic allows to run multiple algorithms in parallel. `Difficulty` is always for `algo0` while `DifficultyAddition` is for `algo1`.
+
 
 > [!IMPORTANT]  
 > During the Qubic idle phase. Your miner will receive empty/idle jobs and should stop mining.
@@ -106,6 +111,7 @@ example job during idle (your miner can do other work but not working on Qubic):
     "RandomSeed": "0000000000000000000000000000000000000000000000000000000000000000",
     "PublicKey": "0000000000000000000000000000000000000000000000000000000000000000",
     "Difficulty": 316,
+    "DifficultyAddition": 74300,
     "Method": "StratumJob",
     "MessageType": 501
 }
@@ -138,6 +144,17 @@ example:
     "Nonce": "C83634426BC99DAA83D16EF2BAF7CA3116C196559EA3CB888CE63CDFE910A271"
 }
 ```
+> [!IMPORTANT]
+> The algorithm of the submitted Solutions/Shares is identified by `nonce[0]`.
+> 
+> nonce[0]      algo byte      (bit 0 selects Hyperidentity/Addition)
+> 
+> e.g. 0x00 -> Hyperidentity (algo 0, bit 0 = 0)
+> 
+> 0x01 -> Addition       (algo 1, bit 0 = 1)
+> 
+> (only bit 0 is read: any even byte = Hyperidentity, any odd byte = Addition)
+
 
 > [!IMPORTANT]  
 > Solutions/Shares are validated async. When your miner sends a solution you will get a message which indicates if the solution was accepted for validation or it was rejected. An accepted solution may be not valid and not count toward your account.
